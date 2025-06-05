@@ -10,6 +10,7 @@ class Mvp extends Model
     use HasFactory;
 
     protected $fillable = ['partido_id', 'jugador_id'];
+    protected $table = 'mvp';
 
     public function partido(){
         return $this->belongsTo(Partido::class);

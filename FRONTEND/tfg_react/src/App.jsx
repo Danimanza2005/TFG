@@ -20,6 +20,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route path="/crear-partido"
           element={
             <ProtectedRoute>
@@ -27,7 +28,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        
         {/*Para que si no existe la ruta te redirija al login*/}
         <Route path="*" element={<Login />} />
       </Routes>
