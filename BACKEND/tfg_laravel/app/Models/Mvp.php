@@ -11,6 +11,8 @@ class Mvp extends Model
 
     protected $fillable = ['partido_id', 'jugador_id'];
     protected $table = 'mvp';
+    //desactiva el created_at y updated_at
+    public $timestamps = false;
 
     public function partido(){
         return $this->belongsTo(Partido::class);

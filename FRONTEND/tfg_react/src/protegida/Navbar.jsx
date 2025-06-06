@@ -18,7 +18,11 @@ function Navbar() {
         </>
       ) : (
         <>
-          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/dashboard">Inicio</Link>
+          <Link to="/ligas">Crear Liga</Link>
+          <Link to="/crear-partido">Partido Amistoso</Link>
+          <Link to="/ultimos-partidos">Últimos Partidos</Link>
+
           <button onClick={handleLogout}>Cerrar sesión</button>
         </>
       )}
