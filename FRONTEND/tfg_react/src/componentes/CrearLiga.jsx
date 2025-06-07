@@ -66,7 +66,7 @@ export default function CrearLiga() {
           <li key={liga.id}>
             {liga.nombre}
             {/* Botón que navega a crear partido, pasando el id de la liga */}
-            <button onClick={() => navigate("/crear-partido", { state: { ligaId: liga.id } })}>
+            <button onClick={() => navigate(`/ligas/${liga.id}/crear-partido`)}>
               Crear Partido para esta Liga
             </button>
           </li>

@@ -5,7 +5,8 @@ import Dashboard from "./componentesSesion/Dashboard";
 import ProtectedRoute from "./protegida/ProtectedRoute";
 import Navbar from "./protegida/Navbar";
 import CrearLiga from "./componentes/CrearLiga";
-import CrearPartido from "./componentes/CrearPartido";
+import CrearPartidoLiga from "./componentes/CrearPartidoLiga";
+import './App.css';
 
 function App() {
   return (
@@ -16,8 +17,8 @@ function App() {
         <Route path="/register" element={<Registro />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
 
-        <Route path="/ligas" element={<ProtectedRoute><CrearLiga /></ProtectedRoute>} />
-        <Route path="/crear-partido" element={<ProtectedRoute><CrearPartido /></ProtectedRoute>} />
+        <Route path="/ligas" element={<ProtectedRoute><CrearLiga/></ProtectedRoute>} />
+        <Route path="/ligas/:id/crear-partido" element={<ProtectedRoute><CrearPartidoLiga/></ProtectedRoute>}/>
 
         {/*Para que si no existe la ruta te redirija al login*/}
         <Route path="*" element={<Login />} />

@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 
-export default function CrearPartido() {
-  const { state } = useLocation();
+export default function CrearPartidoLiga() {
   const navigate = useNavigate();
-  const ligaId = state?.ligaId;
+  const { id: ligaId } = useParams();
 
   const [equipoA, setEquipoA] = useState("");
   const [equipoB, setEquipoB] = useState("");
@@ -26,6 +25,30 @@ export default function CrearPartido() {
   const [mvp, setMvp] = useState("");
 
   const [equiposGuardados, setEquiposGuardados] = useState(false);
+
+  const [guardando, setGuardando] = useState(false);
+
+  const [liga, setLiga] = useState(null);
+
+  useEffect(() => {
+    const fetchLiga = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await api.get(`/ligas/${ligaId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setLiga(res.data.data || res.data);
+      } catch (error) {
+        console.error("Error al cargar la liga:", error);
+        alert("No se pudo cargar la liga");
+      }
+    };
+
+    if (ligaId) {
+      fetchLiga();
+    }
+  }, [ligaId]);
+
 
   const iconosAcciones = {
     gol: "⚽",
@@ -93,6 +116,7 @@ export default function CrearPartido() {
 
   const handleGuardarPartido = async () => {
     const token = localStorage.getItem("token");
+    setGuardando(true); //Empieza el "cargando"
 
     try {
       const resEquipoA = await api.post(
@@ -185,12 +209,19 @@ export default function CrearPartido() {
     } catch (error) {
       console.error("Error al guardar partido:", error.response?.data || error.message);
       alert("Error al guardar partido");
+    } finally {
+      setGuardando(false); //Termina el "cargando"
     }
   };
 
   return (
     <div>
       <h2>Crear Partido de Liga</h2>
+      {liga ? (
+        <h3>Liga: {liga.nombre}</h3>
+      ) : (
+        <p>Cargando nombre de la liga...</p>
+      )}
 
       <h3>1. Equipos y jugadores</h3>
 
@@ -324,6 +355,12 @@ export default function CrearPartido() {
           />
 
           <button onClick={handleGuardarPartido}>Guardar Partido</button>
+          {guardando && (
+            <div className="modal-loader">
+              <div className="spinner"></div>
+              <p>Guardando partido, por favor espera...</p>
+            </div>
+          )}
         </>
       )}
     </div>
