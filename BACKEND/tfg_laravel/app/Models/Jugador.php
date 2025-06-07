@@ -10,6 +10,7 @@ class Jugador extends Model
     use HasFactory;
 
     protected $fillable =['nombre', 'equipo_id'];
+    protected $table = 'jugadores';
     //desactiva el created_at y updated_at
     public $timestamps = false;
 

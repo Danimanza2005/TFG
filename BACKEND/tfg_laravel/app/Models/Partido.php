@@ -10,8 +10,12 @@ class Partido extends Model
     use HasFactory;
 
     protected $fillable =['tipo', 'liga_id', 'equipo_a_id', 'equipo_b_id', 'resultado', 'fecha'];
+    protected $table = 'partidos';
     //desactiva el created_at y updated_at
     public $timestamps = false;
+
+    //para cambiar formato de fecha
+    protected $casts =['fecha' => 'datetime'];
 
     public function liga(){
         return $this->belongsTo(Liga::class);

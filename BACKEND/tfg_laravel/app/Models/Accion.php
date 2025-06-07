@@ -10,6 +10,7 @@ class Accion extends Model
     use HasFactory;
 
     protected $fillable =['partido_id', 'jugador_id', 'equipo_id', 'tipo'];
+    protected $table = 'acciones';
     //desactiva el created_at y updated_at
     public $timestamps = false;
 

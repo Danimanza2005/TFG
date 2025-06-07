@@ -10,6 +10,7 @@ class Equipo extends Model
     use HasFactory;
 
     protected $fillable =['nombre'];
+    protected $table = 'equipos';
     //desactiva el created_at y updated_at
     public $timestamps = false;
 
