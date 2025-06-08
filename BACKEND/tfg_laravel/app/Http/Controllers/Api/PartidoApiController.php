@@ -13,9 +13,17 @@ class PartidoApiController extends Controller
      * Ruta: /api/partidos
      * Descripcion: Carga todos los partidos que esten creados
      */
-    public function index()
+    public function index(Request $request)
     {
-        $partidos = Partido::with(['equipoA', 'equipoB', 'acciones.jugador', 'mvp.jugador'])->get();
+        $consulta = Partido::with(['liga', 'equipoA', 'equipoB', 'acciones.jugador', 'mvp.jugador']);
+        if(isset($request->liga_id)){
+            if($request->liga_id == 'null'){
+                $consulta->whereNull('liga_id');
+            } else{
+                $consulta->where('liga_id', $request->liga_id);
+            }
+        }
+        $partidos = $consulta->get();
         return response()->json($partidos, 200);
     }
 
@@ -48,7 +56,7 @@ class PartidoApiController extends Controller
      */
     public function show(string $id)
     {
-        $partido = Partido::with(['equipoA', 'equipoB', 'acciones.jugador', 'mvp.jugador'])->find($id);
+        $partido = Partido::with(['liga', 'equipoA', 'equipoB', 'acciones.jugador', 'mvp.jugador'])->find($id);
         if(!$partido){
             return response()->json(['message' => 'Partido no encontrado'], 404);
         }

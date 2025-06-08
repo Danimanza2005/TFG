@@ -29,6 +29,13 @@ class EquipoApiController extends Controller
         $request->validate([
             'nombre' => 'required|string',
         ]);
+        $equipoExistente = Equipo::where('nombre', $request->nombre)->first();
+        if ($equipoExistente) {
+            return response()->json([
+                'message' => 'El equipo ya existe',
+                'data' => $equipoExistente
+            ], 200);
+        }
         $equipo = Equipo::create($request->all());
         return response()->json([
             'message' => 'Equipo creado correctamente',
@@ -44,7 +51,7 @@ class EquipoApiController extends Controller
     public function show(string $id)
     {
         $equipo = Equipo::with(['jugadores'])->find($id);
-        if(!$equipo){
+        if (!$equipo) {
             return response()->json(['message' => 'Equipo no encontrado'], 404);
         }
         return response()->json($equipo, 200);
@@ -58,7 +65,7 @@ class EquipoApiController extends Controller
     public function update(Request $request, string $id)
     {
         $equipo = Equipo::find($id);
-        if(!$equipo){
+        if (!$equipo) {
             return response()->json(['message' => 'Equipo no encontrado'], 404);
         }
         $request->validate([
@@ -79,7 +86,7 @@ class EquipoApiController extends Controller
     public function destroy(string $id)
     {
         $equipo = Equipo::find($id);
-        if(!$equipo){
+        if (!$equipo) {
             return response()->json(['message' => 'Equipo no encontrado'], 404);
         }
         $equipo->delete();

@@ -6,6 +6,7 @@ import ProtectedRoute from "./protegida/ProtectedRoute";
 import Navbar from "./protegida/Navbar";
 import CrearLiga from "./componentes/CrearLiga";
 import CrearPartidoLiga from "./componentes/CrearPartidoLiga";
+import CrearPartidoAmistoso from "./componentes/CrearPartidoAmistoso";
 import './App.css';
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
 
         <Route path="/ligas" element={<ProtectedRoute><CrearLiga/></ProtectedRoute>} />
         <Route path="/ligas/:id/crear-partido" element={<ProtectedRoute><CrearPartidoLiga/></ProtectedRoute>}/>
+
+        <Route path="/amistosos" element={<ProtectedRoute><CrearPartidoAmistoso/></ProtectedRoute>} />
 
         {/*Para que si no existe la ruta te redirija al login*/}
         <Route path="*" element={<Login />} />
