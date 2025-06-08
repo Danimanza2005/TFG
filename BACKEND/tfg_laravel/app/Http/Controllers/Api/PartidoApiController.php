@@ -16,10 +16,10 @@ class PartidoApiController extends Controller
     public function index(Request $request)
     {
         $consulta = Partido::with(['liga', 'equipoA', 'equipoB', 'acciones.jugador', 'mvp.jugador']);
-        if(isset($request->liga_id)){
-            if($request->liga_id == 'null'){
-                $consulta->whereNull('liga_id');
-            } else{
+        if (isset($request->liga_id)) {
+            if ($request->liga_id === 'null') {
+                $consulta->where('liga_id', null);
+            } else {
                 $consulta->where('liga_id', $request->liga_id);
             }
         }
@@ -56,8 +56,8 @@ class PartidoApiController extends Controller
      */
     public function show(string $id)
     {
-        $partido = Partido::with(['liga', 'equipoA', 'equipoB', 'acciones.jugador', 'mvp.jugador'])->find($id);
-        if(!$partido){
+        $partido = Partido::with(['liga', 'equipoA.jugadores', 'equipoB.jugadores', 'acciones.jugador', 'mvp.jugador'])->find($id);
+        if (!$partido) {
             return response()->json(['message' => 'Partido no encontrado'], 404);
         }
         return response()->json($partido, 200);
@@ -71,7 +71,7 @@ class PartidoApiController extends Controller
     public function update(Request $request, string $id)
     {
         $partido = Partido::find($id);
-        if(!$partido){
+        if (!$partido) {
             return response()->json(['message' => 'Partido no encontrado'], 404);
         }
         $request->validate([
@@ -97,7 +97,7 @@ class PartidoApiController extends Controller
     public function destroy(string $id)
     {
         $partido = Partido::find($id);
-        if(!$partido){
+        if (!$partido) {
             return response()->json(['message' => 'Partido no encontrado'], 404);
         }
         $partido->delete();

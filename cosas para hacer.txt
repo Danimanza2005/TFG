@@ -4,3 +4,9 @@
 - Ultimos partidos (5 si estas logeado y 5 globales si NO estas logeado)
 - En el apartado de inicio que salga
 ✅- Ver los partidos amistoso creados en el apartado de amistosos
+- Ver si cambiar estructura componentes EJ: componentesFormulario/
+    - JugadoresInput.jsx
+    - ListaJugadores.jsx
+    - AccionesInput.jsx
+    - ModalEstadisticas.jsx
+    - PartidosAmistososLista.jsx

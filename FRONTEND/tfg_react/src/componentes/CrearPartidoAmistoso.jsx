@@ -115,6 +115,30 @@ export default function CrearPartidoAmistoso() {
         setAcciones(nuevasAcciones);
     };
 
+    const handleEliminarPartido = async (partidoId) => {
+        if (!window.confirm("¿Estás seguro de que deseas eliminar este partido?")) return;
+
+        try {
+            const token = localStorage.getItem("token");
+            await api.delete(`/partidos/${partidoId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            // Elimina el partido del estado local sin recargar
+            setPartidosAmistosos(prev => prev.filter(p => p.id !== partidoId));
+
+            // Cierra modal si se está viendo el partido eliminado
+            if (partidoSeleccionado?.id === partidoId) {
+                handleCerrarModal();
+            }
+
+            alert("Partido eliminado correctamente.");
+        } catch (error) {
+            console.error("Error al eliminar partido:", error.response?.data || error.message);
+            alert("Error al eliminar el partido.");
+        }
+    };
+
     const handleGuardarPartido = async () => {
         const token = localStorage.getItem("token");
         setGuardando(true);
@@ -215,34 +239,26 @@ export default function CrearPartidoAmistoso() {
     };
 
     const handleVerEstadisticas = async (partido) => {
-        try {
-            const token = localStorage.getItem("token");
+    try {
+        const token = localStorage.getItem("token");
 
-            // Petición para obtener el partido completo por ID (incluye MVP y demás detalles)
-            const resPartido = await api.get(`/partidos/${partido.id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+        const resPartido = await api.get(`/partidos/${partido.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
-            const partidoCompleto = resPartido.data.data || resPartido.data;
+        const partidoCompleto = resPartido.data.data || resPartido.data;
+        console.log("Partido completo:", partidoCompleto);
 
-            setPartidoSeleccionado(partidoCompleto);
-            setMostrarModal(true);
+        setPartidoSeleccionado(partidoCompleto);
+        setMostrarModal(true);
 
-            // Cargar jugadores equipo A
-            const resEquipoA = await api.get(`/equipos/${partidoCompleto.equipo_a.id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setJugadoresEquipoA(resEquipoA.data.jugadores || []);
-
-            // Cargar jugadores equipo B
-            const resEquipoB = await api.get(`/equipos/${partidoCompleto.equipo_b.id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setJugadoresEquipoB(resEquipoB.data.jugadores || []);
-        } catch (error) {
-            alert("Error cargando detalles del partido y jugadores");
-        }
-    };
+        // Ajustar según estructura
+        setJugadoresEquipoA(partidoCompleto.equipo_a?.jugadores || []);
+        setJugadoresEquipoB(partidoCompleto.equipo_b?.jugadores || []);
+    } catch (error) {
+        alert("Error cargando detalles del partido y jugadores");
+    }
+};
 
     const handleCerrarModal = () => {
         setMostrarModal(false);
@@ -273,12 +289,18 @@ export default function CrearPartidoAmistoso() {
                             <li key={partido.id} style={{ marginBottom: '10px' }}>
                                 <button
                                     onClick={() => handleVerEstadisticas(partido)}
-                                    style={{ whiteSpace: 'normal', textAlign: 'left', padding: '8px', width: '100%', border: 'none', background: 'none', cursor: 'pointer' }}
+                                    style={{
+                                        whiteSpace: "normal",
+                                        textAlign: "left",
+                                        padding: "8px",
+                                        marginRight: "10px",
+                                    }}
                                 >
                                     <div><strong>Liga:</strong> {partido.liga ? partido.liga.nombre : 'Amistoso'}</div>
                                     <div>{partido.equipo_a?.nombre || 'Equipo A'} vs {partido.equipo_b?.nombre || 'Equipo B'}</div>
                                     <div>Resultado: {partido.resultado || 'No disponible'}</div>
                                 </button>
+                                <button onClick={() => handleEliminarPartido(partido.id)}>🗑️</button>
                             </li>
                         ))
                     )}
@@ -395,23 +417,30 @@ export default function CrearPartidoAmistoso() {
                         ))}
                     </ul>
 
-                    <h3>3. Resultado y MVP</h3>
-                    <input
-                        type="text"
-                        placeholder="Resultado"
-                        value={resultado}
-                        onChange={(e) => setResultado(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Jugador MVP"
-                        value={mvp}
-                        onChange={(e) => setMvp(e.target.value)}
-                    />
+                    <h3>3. Seleccionar MVP</h3>
+                    <select value={mvp} onChange={(e) => setMvp(e.target.value)}>
+                        <option value="" disabled>Selecciona MVP</option>
+                        {jugadoresTotales.map((j, i) => (
+                            <option key={`mvp-${i}`} value={j.nombre}>
+                                {j.nombre} ({j.equipo})
+                            </option>
+                        ))}
+                    </select>
 
-                    <button onClick={handleGuardarPartido} disabled={guardando}>
-                        {guardando ? "Guardando..." : "Guardar Partido"}
-                    </button>
+                    <h3>4. Resultado final</h3>
+                    <input
+                        type="text"
+                        placeholder="Resultado (ej: 3-2)"
+                        value={resultado}
+                        onChange={(e) => setResultado(e.target.value)} />
+
+                    <button onClick={handleGuardarPartido}>Guardar Partido</button>
+                    {guardando && (
+                        <div className="modal-loader">
+                            <div className="spinner"></div>
+                            <p>Guardando partido, por favor espera...</p>
+                        </div>
+                    )}
                 </>
             )}
             {/* Modal de estadísticas */}
@@ -457,16 +486,18 @@ export default function CrearPartidoAmistoso() {
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div style={{ width: "45%" }}>
                                 <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
+                                <h3>Jugadores Equipo A</h3>
                                 <ul>
-                                    {jugadoresEquipoA.map((j) => (
+                                    {jugadoresEquipoA.map(j => (
                                         <li key={j.id}>{j.nombre}</li>
                                     ))}
                                 </ul>
                             </div>
                             <div style={{ width: "45%" }}>
                                 <h4>{partidoSeleccionado.equipo_b?.nombre}</h4>
+                                <h3>Jugadores Equipo B</h3>
                                 <ul>
-                                    {jugadoresEquipoB.map((j) => (
+                                    {jugadoresEquipoB.map(j => (
                                         <li key={j.id}>{j.nombre}</li>
                                     ))}
                                 </ul>
@@ -502,7 +533,6 @@ export default function CrearPartidoAmistoso() {
                                 );
                             })}
                         </ul>
-
                         <button onClick={handleCerrarModal} style={{ marginTop: "20px" }}>
                             Cerrar
                         </button>

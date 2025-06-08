@@ -48,40 +48,50 @@ export default function CrearLiga() {
       const respuesta = await api.get(`/partidos?liga_id=${ligaId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setPartidosPorLiga((prev) => {
-        const nuevoEstado = {
-          ...prev,
-          [ligaId]: respuesta.data.data || respuesta.data,
-        };
-        return nuevoEstado;
-      });
+      setPartidosPorLiga((prev) => ({
+        ...prev,
+        [ligaId]: respuesta.data.data || respuesta.data,
+      }));
     } catch (error) {
       alert("Error al obtener los partidos");
     }
   };
 
-  // Aquí hacemos la petición para obtener detalle completo del partido
+  const handleEliminarPartido = async (ligaId, partidoId) => {
+    const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este partido?");
+    if (!confirmar) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await api.delete(`/partidos/${partidoId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setPartidosPorLiga((prev) => ({
+        ...prev,
+        [ligaId]: (prev[ligaId] || []).filter((p) => p.id !== partidoId),
+      }));
+    } catch (error) {
+      alert("Error al eliminar el partido");
+    }
+  };
+
   const handleVerEstadisticas = async (partido) => {
     try {
       const token = localStorage.getItem("token");
-
-      // Petición para obtener el partido completo por ID (incluye MVP y demás detalles)
       const resPartido = await api.get(`/partidos/${partido.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const partidoCompleto = resPartido.data.data || resPartido.data;
-
       setPartidoSeleccionado(partidoCompleto);
       setMostrarModal(true);
 
-      // Cargar jugadores equipo A
       const resEquipoA = await api.get(`/equipos/${partidoCompleto.equipo_a.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setJugadoresEquipoA(resEquipoA.data.jugadores || []);
 
-      // Cargar jugadores equipo B
       const resEquipoB = await api.get(`/equipos/${partidoCompleto.equipo_b.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -99,15 +109,13 @@ export default function CrearLiga() {
   return (
     <div>
       <h2>Crear Liga</h2>
-      <>
-        <input
-          type="text"
-          placeholder="Nombre de la liga"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
-        <button onClick={handleCrearLiga}>Crear Liga</button>
-      </>
+      <input
+        type="text"
+        placeholder="Nombre de la liga"
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+      />
+      <button onClick={handleCrearLiga}>Crear Liga</button>
 
       <h3>Listado de ligas</h3>
       <ul>
@@ -120,14 +128,24 @@ export default function CrearLiga() {
             <button onClick={() => handleVerPartidos(liga.id)}>
               Ver Partidos de esta Liga
             </button>
+
             <ul>
               {(partidosPorLiga[liga.id] || []).map((partido) => (
                 <li key={partido.id}>
-                  <button onClick={() => handleVerEstadisticas(partido)} style={{ whiteSpace: 'normal', textAlign: 'left', padding: '8px' }}>
-                    <div><strong>Liga:</strong> {partido.liga ? partido.liga.nombre : 'Amistoso'}</div>
-                    <div>{partido.equipo_a?.nombre || 'Equipo A'} vs {partido.equipo_b?.nombre || 'Equipo B'}</div>
-                    <div>Resultado: {partido.resultado || 'No disponible'}</div>
+                  <button
+                    onClick={() => handleVerEstadisticas(partido)}
+                    style={{
+                      whiteSpace: "normal",
+                      textAlign: "left",
+                      padding: "8px",
+                      marginRight: "10px",
+                    }}
+                  >
+                    <div><strong>Liga:</strong> {partido.liga ? partido.liga.nombre : "Amistoso"}</div>
+                    <div>{partido.equipo_a?.nombre || "Equipo A"} vs {partido.equipo_b?.nombre || "Equipo B"}</div>
+                    <div>Resultado: {partido.resultado || "No disponible"}</div>
                   </button>
+                  <button onClick={() => handleEliminarPartido(liga.id, partido.id)}>🗑️</button>
                 </li>
               ))}
             </ul>
@@ -135,10 +153,8 @@ export default function CrearLiga() {
         ))}
       </ul>
 
-      {/* Modal de estadísticas */}
       {mostrarModal && partidoSeleccionado && (
         <>
-          {/* Overlay gris semitransparente */}
           <div
             style={{
               position: "fixed",
@@ -167,14 +183,11 @@ export default function CrearLiga() {
             }}
           >
             <h2>Estadísticas del Partido</h2>
-
             <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
             <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
-
             <h3>
               {partidoSeleccionado.equipo_a?.nombre} {partidoSeleccionado.resultado} {partidoSeleccionado.equipo_b?.nombre}
             </h3>
-
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div style={{ width: "45%" }}>
                 <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
@@ -193,28 +206,17 @@ export default function CrearLiga() {
                 </ul>
               </div>
             </div>
-
             <p><strong>MVP:</strong> {partidoSeleccionado.mvp?.jugador?.nombre || "No disponible"}</p>
-
             <h4>Estadísticas destacadas</h4>
             <ul>
               {(partidoSeleccionado.acciones || []).map((accion, index) => {
                 let icono = "";
                 switch (accion.tipo) {
-                  case "gol":
-                    icono = "⚽";
-                    break;
-                  case "asistencia":
-                    icono = "👟";
-                    break;
-                  case "amarilla":
-                    icono = "🟨";
-                    break;
-                  case "roja":
-                    icono = "🟥";
-                    break;
-                  default:
-                    icono = "ℹ️";
+                  case "gol": icono = "⚽"; break;
+                  case "asistencia": icono = "👟"; break;
+                  case "amarilla": icono = "🟨"; break;
+                  case "roja": icono = "🟥"; break;
+                  default: icono = "ℹ️";
                 }
                 return (
                   <li key={index}>
@@ -223,10 +225,7 @@ export default function CrearLiga() {
                 );
               })}
             </ul>
-
-            <button onClick={handleCerrarModal} style={{ marginTop: "20px" }}>
-              Cerrar
-            </button>
+            <button onClick={handleCerrarModal} style={{ marginTop: "20px" }}>Cerrar</button>
           </div>
         </>
       )}
