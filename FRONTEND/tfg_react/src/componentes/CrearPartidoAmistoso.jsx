@@ -486,7 +486,6 @@ export default function CrearPartidoAmistoso() {
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div style={{ width: "45%" }}>
                                 <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
-                                <h3>Jugadores Equipo A</h3>
                                 <ul>
                                     {jugadoresEquipoA.map(j => (
                                         <li key={j.id}>{j.nombre}</li>
@@ -495,7 +494,6 @@ export default function CrearPartidoAmistoso() {
                             </div>
                             <div style={{ width: "45%" }}>
                                 <h4>{partidoSeleccionado.equipo_b?.nombre}</h4>
-                                <h3>Jugadores Equipo B</h3>
                                 <ul>
                                     {jugadoresEquipoB.map(j => (
                                         <li key={j.id}>{j.nombre}</li>
