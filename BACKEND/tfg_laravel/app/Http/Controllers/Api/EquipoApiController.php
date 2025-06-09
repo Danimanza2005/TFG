@@ -29,13 +29,15 @@ class EquipoApiController extends Controller
         $request->validate([
             'nombre' => 'required|string',
         ]);
-        $equipoExistente = Equipo::where('nombre', $request->nombre)->first();
+        //if para que si el usuario pone el nombre de un equipo y el equipo ya existe te devuelva el id de ese equipo para que no se repita el mismo equipo varias veces
+        $equipoExistente = Equipo::where('nombre', $request->nombre)->first();  //first() para obtener el primer resultado de la consulta
         if ($equipoExistente) {
             return response()->json([
                 'message' => 'El equipo ya existe',
                 'data' => $equipoExistente
             ], 200);
         }
+        //si el equipo que el usuario no existia pues se crea un nuevo equipo
         $equipo = Equipo::create($request->all());
         return response()->json([
             'message' => 'Equipo creado correctamente',

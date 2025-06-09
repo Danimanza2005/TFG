@@ -16,10 +16,14 @@ class PartidoApiController extends Controller
     public function index(Request $request)
     {
         $consulta = Partido::with(['liga', 'equipoA', 'equipoB', 'acciones.jugador', 'mvp.jugador']);
+        //verificamos que en el request se encuentre el parametro liga_id
         if (isset($request->liga_id)) {
+            //si liga_id es null
             if ($request->liga_id === 'null') {
+                //añadimos a la consulta una condicion para que nos devuelvan los partidos que tienen liga_id como null (amistosos)
                 $consulta->where('liga_id', null);
             } else {
+                //si liga_id no es null pues nos devolvera los partidos que si tienen un id
                 $consulta->where('liga_id', $request->liga_id);
             }
         }
