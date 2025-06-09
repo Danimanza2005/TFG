@@ -139,7 +139,7 @@ export default function CrearLiga() {
           <li key={liga.id}>
             {liga.nombre}
             <button onClick={() => navigate(`/ligas/${liga.id}/crear-partido`)}>Crear partido en esta liga</button>
-            <button onClick={handleVerPartidos}>Ver partidos de esta liga</button>
+            <button onClick={() => handleVerPartidos(liga.id)}>Ver partidos de esta liga</button>
             <ul>
               {(partidosPorLiga[liga.id] || []).map((partido) => (
                 <li key={partido.id}>
@@ -169,18 +169,28 @@ export default function CrearLiga() {
             left: 0,
             width: "100vw",
             height: "100vh",
-            backgroundColor: "black",
+            backgroundColor: "rgba(0,0,0,0.5)",
             zIndex: 999
           }}
             onClick={handleCerrarModal}></div>
           <div style={{
-            position: "fixed"
+            position: "fixed",
+            top: "10%",
+            left: "25%",
+            width: "50%",
+            background:"white",
+            padding: "20px",
+            border:"2px solid black",
+            borderRadius: "10px",
+            zIndex: 1000,
+            maxHeight:"80vh",
+            overflowY: "auto"
           }}>
             <h2>ESTADISTICAS DEL PARTIDO</h2>
             <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
             <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
             <h3>{partidoSeleccionado.equipo_a?.nombre}{partidoSeleccionado.resultado}{partidoSeleccionado.equipo_b?.nombre}</h3>
-            <div style={{}}>
+            <div style={{display: "flex", justifyContent: "space-between"}}>
               <div style={{ width: "45%" }}>
                 <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
                 <ul>

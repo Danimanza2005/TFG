@@ -29,6 +29,11 @@ class Partido extends Model
         return $this->belongsTo(Equipo::class, 'equipo_b_id');
     }
 
+    //tabla intermedia
+    public function jugadores(){
+        return $this->belongsToMany(Jugador::class, 'jugador_partido', 'partido_id', 'jugador_id');
+    }
+
     public function acciones(){
         return $this->hasMany(Accion::class);
     }

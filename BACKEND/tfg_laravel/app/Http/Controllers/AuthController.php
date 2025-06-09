@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Notifications\BienvenidaUsuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -24,6 +25,7 @@ class AuthController extends Controller
             'password' => bcrypt($fields['password']),
         ]);
 
+        $user->notify(new BienvenidaUsuario());
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
