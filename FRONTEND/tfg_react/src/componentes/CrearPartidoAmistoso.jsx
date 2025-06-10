@@ -306,6 +306,7 @@ export default function CrearPartidoAmistoso() {
                     )}
                 </ul>
             )}
+            <hr style={{ margin: "20px 0" }} />
             <h2>Crear Partido Amistoso</h2>
 
             <h3>1. Equipos y jugadores</h3>

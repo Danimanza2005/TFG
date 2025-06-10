@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 
-function Navbar() {
+export default function Navbar() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -18,16 +18,13 @@ function Navbar() {
         </>
       ) : (
         <>
-          <Link to="/dashboard">Inicio</Link>
-          <Link to="/ligas">Crear Liga</Link>
-          <Link to="/amistosos">Partido Amistoso</Link>
-          <Link to="/ultimos-partidos">Últimos Partidos</Link>
-
-          <button onClick={handleLogout}>Cerrar sesión</button>
+          <Link to="/">Inicio</Link>
+          <Link to="/ligas">Crear liga</Link>
+          <Link to="/amistosos">Partido amistoso</Link>
+          <Link to="/ultimos-partidos">Ultimos partidos</Link>
+          <button onClick={handleLogout}>Cerrar sesion</button>
         </>
       )}
     </nav>
   );
 }
-
-export default Navbar;
