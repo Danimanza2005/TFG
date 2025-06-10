@@ -239,26 +239,26 @@ export default function CrearPartidoAmistoso() {
     };
 
     const handleVerEstadisticas = async (partido) => {
-    try {
-        const token = localStorage.getItem("token");
+        try {
+            const token = localStorage.getItem("token");
 
-        const resPartido = await api.get(`/partidos/${partido.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+            const resPartido = await api.get(`/partidos/${partido.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-        const partidoCompleto = resPartido.data.data || resPartido.data;
-        console.log("Partido completo:", partidoCompleto);
+            const partidoCompleto = resPartido.data.data || resPartido.data;
+            console.log("Partido completo:", partidoCompleto);
 
-        setPartidoSeleccionado(partidoCompleto);
-        setMostrarModal(true);
+            setPartidoSeleccionado(partidoCompleto);
+            setMostrarModal(true);
 
-        // Ajustar según estructura
-        setJugadoresEquipoA(partidoCompleto.equipo_a?.jugadores || []);
-        setJugadoresEquipoB(partidoCompleto.equipo_b?.jugadores || []);
-    } catch (error) {
-        alert("Error cargando detalles del partido y jugadores");
-    }
-};
+            // Ajustar según estructura
+            setJugadoresEquipoA(partidoCompleto.equipo_a?.jugadores || []);
+            setJugadoresEquipoB(partidoCompleto.equipo_b?.jugadores || []);
+        } catch (error) {
+            alert("Error cargando detalles del partido y jugadores");
+        }
+    };
 
     const handleCerrarModal = () => {
         setMostrarModal(false);
@@ -296,7 +296,7 @@ export default function CrearPartidoAmistoso() {
                                         marginRight: "10px",
                                     }}
                                 >
-                                    <div><strong>Liga:</strong> {partido.liga ? partido.liga.nombre : 'Amistoso'}</div>
+                                    <div><strong>Amistoso:</strong></div>
                                     <div>{partido.equipo_a?.nombre || 'Equipo A'} vs {partido.equipo_b?.nombre || 'Equipo B'}</div>
                                     <div>Resultado: {partido.resultado || 'No disponible'}</div>
                                 </button>

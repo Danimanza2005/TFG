@@ -94,6 +94,20 @@ class PartidoApiController extends Controller
     }
 
     /**
+     * Metodo: GET
+     * Ruta: /api/partidos/ultimos-partidos
+     * Descripcion: Obtiene los últimos 5 partidos
+     */
+    public function ultimosPartidos()
+    {
+        $ultimosPartidos = Partido::with(['liga', 'equipoA', 'equipoB'])
+            ->orderBy('fecha', 'desc')
+            ->limit(5)
+            ->get();
+        return response()->json($ultimosPartidos, 200);
+    }
+
+    /**
      * Metodo: DELETE
      * Ruta: /api/partidos/{id}
      * Descripcion: Elimina un partido

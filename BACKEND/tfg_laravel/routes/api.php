@@ -72,6 +72,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/mvp/{id}', [MvpApiController::class, 'update']);
     Route::delete('/mvp/{id}', [MvpApiController::class, 'destroy']);
 
+    //ruta ultimos partidos
+    Route::get('/partidos/ultimos-partidos', [PartidoApiController::class, 'ultimosPartidos']);
     //rutas API para partidos
     Route::get('/partidos', [PartidoApiController::class, 'index']);
     Route::post('/partidos', [PartidoApiController::class, 'store']);

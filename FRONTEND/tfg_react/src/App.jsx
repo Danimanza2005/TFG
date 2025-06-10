@@ -8,27 +8,36 @@ import CrearLiga from "./componentes/CrearLiga";
 import CrearPartidoLiga from "./componentes/CrearPartidoLiga";
 import CrearPartidoAmistoso from "./componentes/CrearPartidoAmistoso";
 import Inicio from "./componentes/Inicio";
+import UltimosPartidos from "./componentes/UltimosPartidos";
 import './App.css';
 
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Registro />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+      <div className="contenedor">
+        <Navbar />
+        <div className="contenido">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Registro />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-        <Route path="/" element={<Inicio />}></Route>
+            <Route path="/" element={<Inicio />}></Route>
 
-        <Route path="/ligas" element={<ProtectedRoute><CrearLiga/></ProtectedRoute>} />
-        <Route path="/ligas/:id/crear-partido" element={<ProtectedRoute><CrearPartidoLiga/></ProtectedRoute>}/>
+            <Route path="/ligas" element={<ProtectedRoute><CrearLiga /></ProtectedRoute>} />
+            <Route path="/ligas/:id/crear-partido" element={<ProtectedRoute><CrearPartidoLiga /></ProtectedRoute>} />
 
-        <Route path="/amistosos" element={<ProtectedRoute><CrearPartidoAmistoso/></ProtectedRoute>} />
+            <Route path="/amistosos" element={<ProtectedRoute><CrearPartidoAmistoso /></ProtectedRoute>} />
 
-        {/*Para que si no existe la ruta te redirija al login*/}
-        <Route path="*" element={<Login />} />
-      </Routes>
+            <Route path="/ultimos-partidos" element={<ProtectedRoute><UltimosPartidos /></ProtectedRoute>} />
+
+            {/*Para que si no existe la ruta te redirija al login*/}
+            <Route path="*" element={<Login />} />
+          </Routes>
+        </div>
+      </div>
+
+
     </Router>
   );
 }

@@ -149,7 +149,7 @@ export default function CrearLiga() {
                     padding: "8px",
                     marginRight: "10px",
                   }}>
-                    <div><strong>Liga:</strong> {partido.liga ? partido.liga.nombre : "Amistoso"}</div>
+                    <div><strong>Liga: </strong>{partido.liga ? partido.liga.nombre : "Amistoso"}</div>
                     <div>{partido.equipo_a?.nombre || "Equipo A"} vs {partido.equipo_b?.nombre || "Equipo B"}</div>
                     <div>Resultado: {partido.resultado || "No disponible"}</div>
                   </button>

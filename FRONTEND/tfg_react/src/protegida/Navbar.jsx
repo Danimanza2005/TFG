@@ -10,21 +10,23 @@ export default function Navbar() {
   };
 
   return (
-    <nav style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
-      {!token ? (
-        <>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Registro</Link>
-        </>
-      ) : (
-        <>
-          <Link to="/">Inicio</Link>
-          <Link to="/ligas">Crear liga</Link>
-          <Link to="/amistosos">Partido amistoso</Link>
-          <Link to="/ultimos-partidos">Ultimos partidos</Link>
-          <button onClick={handleLogout}>Cerrar sesion</button>
-        </>
-      )}
-    </nav>
+      <nav className="sidebar">
+        <h2>FutbolBarro</h2>
+        {!token ? (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Registro</Link>
+          </>
+        ) : (
+          <>
+            <Link to="/">Inicio</Link>
+            <Link to="/ligas">Crear liga</Link>
+            <Link to="/amistosos">Partido amistoso</Link>
+            <Link to="/ultimos-partidos">Ultimos partidos</Link>
+            <button onClick={handleLogout}>Cerrar sesion</button>
+          </>
+        )}
+      </nav>
+
   );
 }
