@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BienvenidaUsuario;
 use App\Models\User;
-use App\Notifications\BienvenidaUsuario;
+//use App\Notifications\BienvenidaUsuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -25,7 +27,12 @@ class AuthController extends Controller
             'password' => bcrypt($fields['password']),
         ]);
 
-        $user->notify(new BienvenidaUsuario());
+        //$user->notify(new BienvenidaUsuario());
+
+        $nombreUsuario = $request->name;
+        Mail::to($request->email)->send(new BienvenidaUsuario($nombreUsuario));
+
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

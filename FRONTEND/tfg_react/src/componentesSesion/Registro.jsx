@@ -5,17 +5,19 @@ export default function Registro(){
   const [formulario, setFormulario] = useState({name: "", email: "", password: "", password_confirmation: ""});
   const [mensaje, setMensaje] = useState("");
 
+  //funcion que actualiza el estado del formulario
   const handleChange = (e) => {
     setFormulario({...formulario, [e.target.name]: e.target.value});
   };
 
+  //funcion que maneja el envio del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
+    try {
       const respuesta = await api.post("/register", formulario);
-      setMensaje("Usuario registrado");
-    } catch(error){
-      setMensaje("Error al registrarse");
+      setMensaje("Usuario registrado. Token: " + respuesta.data.token);
+    } catch (error) {
+      setMensaje("Error: " + error.response?.data?.message || "Algo salió mal");
     }
   };
 

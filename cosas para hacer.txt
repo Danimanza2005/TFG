@@ -10,3 +10,4 @@
     - AccionesInput.jsx
     - ModalEstadisticas.jsx
     - PartidosAmistososLista.jsx
+- Lo de que cuando inicies sesion te lleve a inicio
