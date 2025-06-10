@@ -2,48 +2,46 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-function Login() {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
+export default function Login() {
+  const [formulario, setFormulario] = useState({ email: "", password: "" });
+  const [error, setError] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    setFormulario({ ...formulario, [e.target.name]: e.target.value });
+    setError({ ...error, [e.target.name]: "" })
   };
 
   const validate = () => {
-    const newErrors = {};
-    if (!form.email) newErrors.email = "Correo requerido";
-    if (!form.password) newErrors.password = "Contraseña requerida";
-    return newErrors;
+    const nuevoError = {};
+    if (!formulario.email) nuevoError.email = "Inserte un correo";
+    if (!formulario.password) nuevoError.password = "Inserte una contraseña";
+    return nuevoError;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = validate();
-    if (Object.keys(newErrors).length > 0) return setErrors(newErrors);
-
-    try {
-      const res = await api.post("/login", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
-    } catch (err) {
-      setErrors({ general: "Credenciales incorrectas" });
+    const nuevoError = validate();
+    if(Object.keys(nuevoError).length > 0) return setError(nuevoError);
+    try{
+      const respuesta = await api.post("/login", formulario);
+      localStorage.setItem("token", respuesta.data.token);
+      //una vez que el usuario este logeado lo enviamos a la pantalla de inicio
+      navigate("/");
+    } catch (error){
+      setError({general: "Credenciales incorrectas"});
     }
   };
 
-  return (
+  return(
     <form onSubmit={handleSubmit}>
       <h2>Login</h2>
-      <input name="email" type="email" placeholder="Correo" onChange={handleChange} />
-      {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
-      <input name="password" type="password" placeholder="Contraseña" onChange={handleChange} />
-      {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
+      <input type="email" name="email" placeholder="Introduce un correo" onChange={handleChange} />
+      {error.email && <p style={{color: "red"}}>{error.email}</p>}
+      <input type="password" name="password" placeholder="Introduce la contraseña" onChange={handleChange} />
+      {error.password && <p style={{color: "red"}}>{error.password}</p>}
       <button type="submit">Entrar</button>
-      {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
+      {error.general && <p style={{color: "red"}}>{error.general}</p>}
     </form>
   );
 }
-
-export default Login;

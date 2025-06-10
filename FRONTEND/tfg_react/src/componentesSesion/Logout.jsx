@@ -1,29 +1,27 @@
 import api from "../api/axios";
 
-function Logout() {
+export default function Logout(){
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
-
-    try {
-      await api.post(
-        "/logout",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+    try{
+      await api.post("/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      //eliminamos el token del localStorage
       localStorage.removeItem("token");
-      alert("Sesión cerrada");
-      window.location.reload(); // o redirige a login
-    } catch (err) {
-      alert("Error al cerrar sesión");
+      alert("Sesion cerrada");
+      //recargamos la pagina
+      window.location.reload();
+    } catch(error){
+      alert("Error al cerrar sesion");
     }
   };
 
-  return <button onClick={handleLogout}>Cerrar Sesión</button>;
+  return (
+    <div>
+      <button onClick={handleLogout}>Cerrar sesion</button>
+    </div>
+  );
 }
-
-export default Logout;

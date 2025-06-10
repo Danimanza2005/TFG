@@ -1,40 +1,33 @@
 import { useState } from "react";
 import api from "../api/axios";
 
-function Registro() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-  });
-  const [message, setMessage] = useState("");
+export default function Registro(){
+  const [formulario, setFormulario] = useState({name: "", email: "", password: "", password_confirmation: ""});
+  const [mensaje, setMensaje] = useState("");
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setFormulario({...formulario, [e.target.name]: e.target.value});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await api.post("/register", form);
-      setMessage("Usuario registrado. Token: " + res.data.token);
-    } catch (err) {
-      setMessage("Error: " + err.response?.data?.message || "Algo salió mal");
+    try{
+      const respuesta = await api.post("/register", formulario);
+      setMensaje("Usuario registrado");
+    } catch(error){
+      setMensaje("Error al registrarse");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Registro</h2>
-      <input name="name" placeholder="Nombre" onChange={handleChange} required />
-      <input name="email" type="email" placeholder="Correo" onChange={handleChange} required />
-      <input name="password" type="password" placeholder="Contraseña" onChange={handleChange} required />
-      <input name="password_confirmation" type="password" placeholder="Confirmar Contraseña" onChange={handleChange} required />
+      <input type="text" name="name" placeholder="Introduce un nombre" onChange={handleChange} required />
+      <input type="email" name="email" placeholder="Introduce un correo" onChange={handleChange} required />
+      <input type="password" name="password" placeholder="Introduce una contraseña" onChange={handleChange} required />
+      <input type="password" name="password_confirmation" placeholder="Confirma contraseña" onChange={handleChange} required />
       <button type="submit">Registrarse</button>
-      <p>{message}</p>
+      <p>{mensaje}</p>
     </form>
   );
 }
-
-export default Registro;
