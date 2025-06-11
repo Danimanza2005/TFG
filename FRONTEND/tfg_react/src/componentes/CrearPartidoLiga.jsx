@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
+import '../css/partidoLiga.css';
 
 export default function CrearPartidoLiga() {
   const navigate = useNavigate();
@@ -85,13 +86,13 @@ export default function CrearPartidoLiga() {
 
   const handleGuardarEquipos = () => {
     //validar para que los campos de los equipos no esten vacios
-    if(!equipoA.trim() || !equipoB.trim()){
+    if (!equipoA.trim() || !equipoB.trim()) {
       alert("Debes introducir un nombre para los equipos");
       return;
     }
 
     const jugadoresModificados = [...jugadoresA.map((j) => ({ nombre: j, equipo: equipoA })),
-                                  ...jugadoresB.map((j) => ({ nombre: j, equipo: equipoB }))
+    ...jugadoresB.map((j) => ({ nombre: j, equipo: equipoB }))
     ];
 
     setJugadoresTotales(jugadoresModificados);
@@ -242,60 +243,61 @@ export default function CrearPartidoLiga() {
     <div>
       <h2>Crear partido de liga</h2>
       {liga ? (
-        <h3>Liga: {liga.nombre}</h3>
+        <h3 className="nombreLiga">Liga: {liga.nombre}</h3>
       ) : (
         <p>Cargando nombre de la liga...</p>
       )}
 
-      <h3>1. Equipos y jugadores</h3>
-      <div>
-        <input type="text" placeholder="Nombre equipoA" value={equipoA} onChange={(e) => setEquipoA(e.target.value)} />
-        <div>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="equipo-container">
+          <h3>Equipo A</h3>
+          <input type="text" placeholder="Nombre equipoA" value={equipoA} onChange={(e) => setEquipoA(e.target.value)} />
           <input type="text" placeholder="Jugadores equipoA (separados por comas)" value={inputJugadoresA} onChange={(e) => setInputJugadoresA(e.target.value)} />
           <button onClick={() => {
             handleAgregarJugadores(inputJugadoresA, setJugadoresA, jugadoresA, setErrorJugadoresA);
             setInputJugadoresA("");
-          }}>Añadir jugadores al equipoA</button>
+          }}>Añadir jugadores al equipo A</button>
           {errorJugadoresA && <p style={{ color: "red" }}>{errorJugadoresA}</p>}
           <ul>
             {jugadoresA.map((j, i) => (
               <li key={`jugA-${i}`}>
                 {j}
                 {jugadoresA.length > 0 && (
-                  <button onClick={() => handleEliminarJugador(i, jugadoresA, setJugadoresA)}>🗑️</button>
+                  <button className="btnEliminar" onClick={() => handleEliminarJugador(i, jugadoresA, setJugadoresA)}>🗑️</button>
                 )}
               </li>
             ))}
           </ul>
         </div>
-      </div>
 
-      <div>
-        <input type="text" placeholder="Nombre equipoB" value={equipoB} onChange={(e) => setEquipoB(e.target.value)} />
-        <div>
+        <div className="equipo-container">
+          <h3>Equipo B</h3>
+          <input type="text" placeholder="Nombre equipoB" value={equipoB} onChange={(e) => setEquipoB(e.target.value)} />
           <input type="text" placeholder="Jugadores equipoB (separados por comas)" value={inputJugadoresB} onChange={(e) => setInputJugadoresB(e.target.value)} />
           <button onClick={() => {
             handleAgregarJugadores(inputJugadoresB, setJugadoresB, jugadoresB, setErrorJugadoresB);
             setInputJugadoresB("");
-          }}>Añadir jugadores al equipoB</button>
+          }}>Añadir jugadores al equipo B</button>
           {errorJugadoresB && <p style={{ color: "red" }}>{errorJugadoresB}</p>}
           <ul>
             {jugadoresB.map((j, i) => (
               <li key={`jugB-${i}`}>
                 {j}
                 {jugadoresB.length > 0 && (
-                  <button onClick={() => handleEliminarJugador(i, jugadoresB, setJugadoresB)}>🗑️</button>
+                  <button className="btnEliminar" onClick={() => handleEliminarJugador(i, jugadoresB, setJugadoresB)}>🗑️</button>
                 )}
               </li>
             ))}
           </ul>
         </div>
       </div>
-      <button onClick={handleGuardarEquipos} disabled={!validacionEquipos}>Guardar equipos y jugadores</button>
+      <button className="btnGuardarEquipos" onClick={handleGuardarEquipos} disabled={!validacionEquipos}>Guardar equipos y jugadores</button>
+      
       {equiposGuardados && (
-        <>
-          <h3>2. Añadir acciones</h3>
-          <select value={jugadorSeleccionado} onChange={(e) => setJugadorSeleccionado(e.target.value)}>
+        <div className="lineaAmarilla">
+        <div className="seccion-partido">
+          <h3>Añadir acciones</h3>
+          <select className="inputYselect" value={jugadorSeleccionado} onChange={(e) => setJugadorSeleccionado(e.target.value)}>
             <option value="" disabled>Selecciona un jugador</option>
             {jugadoresTotales.map((j, i) => (
               <option key={`${j.nombre}-${i}`} value={j.nombre}>
@@ -303,24 +305,24 @@ export default function CrearPartidoLiga() {
               </option>
             ))}
           </select>
-          <select value={accionSeleccionada} onChange={(e) => setAccionSeleccionada(e.target.value)}>
+          <select className="inputYselect" value={accionSeleccionada} onChange={(e) => setAccionSeleccionada(e.target.value)}>
             <option value="" disabled>Acciones</option>
             <option value="gol">Gol ⚽</option>
             <option value="asistencia">Asistencia 👟</option>
             <option value="amarilla">Amarilla 🟨</option>
             <option value="roja">Roja 🟥</option>
           </select>
-          <button onClick={handleAñadirAccion}>Añadir accion</button>
+          <button className="btnGuardarEquiposAccion" onClick={handleAñadirAccion}>Añadir accion</button>
           <ul>
             {acciones.map((a, i) => (
-              <li key={`accion-${i}`}>
-                {a.jugador} ({a.equipo}) : {a.accion} {iconosAcciones[a.accion]}
-                <button onClick={() => handleEliminarAccion(i)}>🗑️</button>
+              <li key={`accion-${i}`} className="lista-accion">
+                <span>{a.jugador} ({a.equipo}) : {a.accion} {iconosAcciones[a.accion]}</span>
+                <button className="btnEliminarAccion" onClick={() => handleEliminarAccion(i)}>🗑️</button>
               </li>
             ))}
           </ul>
-          <h3>3. Seleccionar MVP</h3>
-          <select value={mvp} onChange={(e) => setMvp(e.target.value)}>
+          <h3>Seleccionar MVP</h3>
+          <select className="inputYselect" value={mvp} onChange={(e) => setMvp(e.target.value)}>
             <option value="" disabled>Seleccionar MVP</option>
             {jugadoresTotales.map((j, i) => (
               <option key={`mvp-${i}`} value={j.nombre}>
@@ -328,16 +330,17 @@ export default function CrearPartidoLiga() {
               </option>
             ))}
           </select>
-          <h3>4. Resultado</h3>
-          <input type="text" placeholder="Resultado (ej: 1-2)" value={resultado} onChange={(e) => setResultado(e.target.value)} />
-          <button onClick={handleGuardarPartido}>Guardar partido</button>
+          <h3>Resultado</h3>
+          <input className="inputYselect" type="text" placeholder="Resultado (ej: 1-2)" value={resultado} onChange={(e) => setResultado(e.target.value)} />
+          <button className="btnGuardarPartidoLiga" onClick={handleGuardarPartido}>Guardar partido</button>
           {guardando && (
             <div className="modal-loader">
               <div className="spinner"></div>
               <p>Guardando partido, por favor espere...</p>
             </div>
           )}
-        </>
+        </div>
+        </div>
       )}
     </div>
   );

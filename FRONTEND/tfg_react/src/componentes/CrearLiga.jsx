@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import '../css/liga.css';
 
 export default function CrearLiga() {
   //definimos los estados
@@ -109,7 +110,7 @@ export default function CrearLiga() {
 
       //recorremos las acciones del partido
       acciones.forEach((accion) => {
-        
+
         if (
           //verifica que la accion sea del equipo A
           accion.equipo_id === partidoCompleto.equipo_a?.id &&
@@ -141,32 +142,32 @@ export default function CrearLiga() {
   };
 
   return (
-    <div>
+    <div className="crear-liga">
       <h2>Crear liga</h2>
-      <input type="text" placeholder="Introduce un nombre a la liga" value={nombre} onChange={(event) => setNombre(event.target.value)} />
-      <button onClick={handleCrearLiga}>Crear liga</button>
+      <input className="inputCrearLiga" type="text" placeholder="Introduce un nombre a la liga" value={nombre} onChange={(event) => setNombre(event.target.value)} />
+      <button className="btnLiga" onClick={handleCrearLiga}>Crear liga</button>
 
       <h2>Listado de ligas</h2>
       <ul>
         {ligas.map((liga) => (
           <li key={liga.id}>
             {liga.nombre}
-            <button onClick={() => navigate(`/ligas/${liga.id}/crear-partido`)}>Crear partido en esta liga</button>
-            <button onClick={() => handleVerPartidos(liga.id)}>Ver partidos de esta liga</button>
+            <button className="btnLiga" onClick={() => navigate(`/ligas/${liga.id}/crear-partido`)}>Crear partido en esta liga</button>
+            <button className="btnLiga" onClick={() => handleVerPartidos(liga.id)}>Ver partidos de esta liga</button>
             <ul>
               {(partidosPorLiga[liga.id] || []).map((partido) => (
-                <li key={partido.id}>
+                <li key={partido.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <button onClick={() => handleVerEstadisticas(partido)} style={{
                     whiteSpace: "normal",
                     textAlign: "left",
                     padding: "8px",
                     marginRight: "10px",
-                  }}>
+                  }} className="partido-button">
                     <div><strong>Liga: </strong>{partido.liga ? partido.liga.nombre : "Amistoso"}</div>
                     <div>{partido.equipo_a?.nombre || "Equipo A"} vs {partido.equipo_b?.nombre || "Equipo B"}</div>
                     <div>Resultado: {partido.resultado || "No disponible"}</div>
                   </button>
-                  <button onClick={() => handleEliminarPartidos(liga.id, partido.id)}>🗑️</button>
+                  <button className="btnEliminar" onClick={() => handleEliminarPartidos(liga.id, partido.id)}>🗑️</button>
                 </li>
               ))}
             </ul>
@@ -176,7 +177,7 @@ export default function CrearLiga() {
 
       {mostrarModal && partidoSeleccionado && (
         <>
-          <div style={{
+          <div className="modal-overlay" style={{
             position: "fixed",
             top: 0,
             left: 0,
@@ -186,7 +187,7 @@ export default function CrearLiga() {
             zIndex: 999
           }}
             onClick={handleCerrarModal}></div>
-          <div style={{
+          <div className="modal-estadisticas" style={{
             position: "fixed",
             top: "10%",
             left: "25%",
@@ -202,9 +203,9 @@ export default function CrearLiga() {
             <h2>ESTADISTICAS DEL PARTIDO</h2>
             <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
             <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
-            <h3>{partidoSeleccionado.equipo_a?.nombre}{partidoSeleccionado.resultado}{partidoSeleccionado.equipo_b?.nombre}</h3>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div style={{ width: "45%" }}>
+            <h3 className="neon">{partidoSeleccionado.equipo_a?.nombre} {partidoSeleccionado.resultado} {partidoSeleccionado.equipo_b?.nombre}</h3>
+            <div className="equipos-container">
+              <div className="equipo">
                 <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
                 <ul>
                   {jugadoresEquipoA.map((jugador) => (
@@ -212,7 +213,7 @@ export default function CrearLiga() {
                   ))}
                 </ul>
               </div>
-              <div style={{ width: "45%" }}>
+              <div className="equipo">
                 <h4>{partidoSeleccionado.equipo_b?.nombre}</h4>
                 <ul>
                   {jugadoresEquipoB.map((jugador) => (
@@ -221,25 +222,27 @@ export default function CrearLiga() {
                 </ul>
               </div>
             </div>
-            <p><strong>🎖️ MVP:</strong> {partidoSeleccionado.mvp?.jugador?.nombre || "No disponible"}</p>
-            <h4>Estadisticas destacadas</h4>
-            <ul>
-              {(partidoSeleccionado.acciones || []).map((accion, index) => {
-                let icono = "";
-                switch (accion.tipo) {
-                  case "gol": icono = "⚽"; break;
-                  case "asistencia": icono = "👟"; break;
-                  case "amarilla": icono = "🟨"; break;
-                  case "roja": icono = "🟥"; break;
-                  default: icono = "ℹ️";
-                }
-                return (
-                  <li key={index}>
-                    {icono} {accion.jugador?.nombre} - {accion.tipo.charAt(0).toUpperCase() + accion.tipo.slice(1)}
-                  </li>
-                );
-              })}
-            </ul>
+            <p className="mvp"><strong>🎖️ MVP:</strong> {partidoSeleccionado.mvp?.jugador?.nombre || "No disponible"}</p>
+            <div className="estadisticas-destacadas">
+              <h4>Estadisticas destacadas</h4>
+              <ul>
+                {(partidoSeleccionado.acciones || []).map((accion, index) => {
+                  let icono = "";
+                  switch (accion.tipo) {
+                    case "gol": icono = "⚽"; break;
+                    case "asistencia": icono = "👟"; break;
+                    case "amarilla": icono = "🟨"; break;
+                    case "roja": icono = "🟥"; break;
+                    default: icono = "ℹ️";
+                  }
+                  return (
+                    <li key={index}>
+                      {icono} {accion.jugador?.nombre} - {accion.tipo.charAt(0).toUpperCase() + accion.tipo.slice(1)}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
             <button style={{ marginTop: "20px" }} onClick={handleCerrarModal}>Cerrar</button>
           </div>
         </>

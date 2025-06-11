@@ -1,12 +1,6 @@
 - Revisar lo de cargando... al crear un partido
-- Ultimos partidos (5 si estas logeado y 5 globales si NO estas logeado)
 - En el apartado de inicio que salga
-- Ver si cambiar estructura componentes EJ: componentesFormulario/
-    - JugadoresInput.jsx
-    - ListaJugadores.jsx
-    - AccionesInput.jsx
-    - ModalEstadisticas.jsx
-    - PartidosAmistososLista.jsx
 -Buscar partido por equipos
 -Falta solo ultimos y amistoso a mano
 -Editar lo del correo(no necesario)
+-Hacer que el boton de ver partidos liga sea como el de amistoso, es decir que salga lo de ocultar

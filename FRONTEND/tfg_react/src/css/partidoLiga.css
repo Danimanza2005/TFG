@@ -1,0 +1,184 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.nombreLiga{
+    text-align: center;
+}
+
+.equipo-container {
+    border: 2px solid fuchsia;
+    padding: 15px;
+    margin: 10px;
+    width: 500px;
+    background-color: black;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.equipo-container h3 {
+    background-color: #004792;
+    color: cyan;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    border: 1px dotted cyan;
+    margin-bottom: 15px;
+}
+
+.equipo-container input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 2px solid fuchsia;
+    background-color: black;
+    color: gray;
+    font-family: 'Courier New', monospace;
+}
+
+.equipo-container button {
+    background-color: fuchsia;
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.equipo-container button:hover {
+    background-color: #007BFF;
+}
+
+.equipo-container ul {
+    list-style: none;
+    padding-left: 0;
+    color: cyan;
+}
+
+.btnEliminar {
+    margin-left: 10px;
+}
+
+.btnGuardarEquipos {
+    background-color: fuchsia;
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    margin: 25px;
+}
+
+.btnGuardarEquipos:hover {
+    background-color: #007BFF;
+}
+
+.lineaAmarilla {
+    width: 95%;
+    margin: auto;
+    border: 3px solid #ff0;
+    box-shadow: inset 0 0 10px #ff0;
+}
+
+.seccion-partido {
+    background-color: black;
+    border: 2px dashed cyan;
+    padding: 20px;
+    margin: 20px auto;
+    width: 93%;
+    font-family: 'Courier New', monospace;
+    color: cyan;
+}
+
+.seccion-partido h3 {
+    background-color: #004792;
+    color: cyan;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    border: 1px dotted cyan;
+}
+
+.inputYselect{
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: black;
+    border: 2px solid fuchsia;
+    color: cyan;
+    font-family: 'Courier New', monospace;
+}
+
+.seccion-partido button {
+    background-color: fuchsia;
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.seccion-partido ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+}
+
+.seccion-partido li {
+    margin-bottom: 8px;
+    color: cyan;
+}
+
+.lista-accion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0d0d1a;
+    border-left: 4px solid fuchsia;
+    padding: 5px;
+    margin-bottom: 8px;
+    color: cyan;
+    border-radius: 4px;
+}
+
+.btnGuardarEquiposAccion {
+    background-color: fuchsia;
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.btnGuardarEquiposAccion:hover {
+    background-color: #007BFF;
+}
+
+.btnEliminarAccion {
+    background-color: black;
+    border: 1px solid fuchsia;
+    color: fuchsia;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+}
+
+.btnEliminarAccion:hover {
+    background-color: #007BFF;
+    color: black;
+    border-color: #007BFF;
+}
+
+.btnGuardarPartidoLiga:hover{
+    background-color:lime;
+}

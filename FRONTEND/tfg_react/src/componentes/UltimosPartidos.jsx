@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import '../css/ultimosPartidos.css';
 
 export default function UltimosPartidos() {
   const [partidos, setPartidos] = useState([]);
