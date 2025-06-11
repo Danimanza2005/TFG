@@ -8,4 +8,4 @@
     - ModalEstadisticas.jsx
     - PartidosAmistososLista.jsx
 -Buscar partido por equipos
-hola?
+-Falta solo ultimos y amistoso a mano
