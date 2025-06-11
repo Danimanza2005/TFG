@@ -103,19 +103,32 @@ export default function CrearLiga() {
       setPartidoSeleccionado(partidoCompleto);  //seleccionamos el partido que queremos ver
       setMostrarModal(true);  //nos muestra un modal con las acciones del partido
 
-      const respuestaEquipoA = await api.get(`/equipos/${partidoCompleto.equipo_a.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-      });
-      setJugadoresEquipoA(respuestaEquipoA.data.jugadores || []);
+      const acciones = partidoCompleto.acciones || [];
+      const jugadoresEnPartidoA = [];
+      const jugadoresEnPartidoB = [];
 
-      const respuestaEquipoB = await api.get(`/equipos/${partidoCompleto.equipo_b.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
+      //recorremos las acciones del partido
+      acciones.forEach((accion) => {
+        
+        if (
+          //verifica que la accion sea del equipo A
+          accion.equipo_id === partidoCompleto.equipo_a?.id &&
+          //confirma que tenga un jugador asociado
+          accion.jugador &&
+          //comprueba que el jugador no este ya en la lista para que no se duplique
+          !jugadoresEnPartidoA.find((j) => j.id === accion.jugador.id)) {
+          //agrega el jugador a la lista del equipo A
+          jugadoresEnPartidoA.push(accion.jugador);
+        }
+
+        if (accion.equipo_id === partidoCompleto.equipo_b?.id && accion.jugador && !jugadoresEnPartidoB.find((j) => j.id === accion.jugador.id)) {
+          jugadoresEnPartidoB.push(accion.jugador);
+        }
       });
-      setJugadoresEquipoB(respuestaEquipoB.data.jugadores || []);
+      //guarda los jugadores que tienen accion para mostrarlos
+      setJugadoresEquipoA(jugadoresEnPartidoA);
+      setJugadoresEquipoB(jugadoresEnPartidoB);
+
     } catch (error) {
       alert("Error al cargar las estadisticas del partido");
     }
@@ -178,19 +191,19 @@ export default function CrearLiga() {
             top: "10%",
             left: "25%",
             width: "50%",
-            background:"white",
+            background: "white",
             padding: "20px",
-            border:"2px solid black",
+            border: "2px solid black",
             borderRadius: "10px",
             zIndex: 1000,
-            maxHeight:"80vh",
+            maxHeight: "80vh",
             overflowY: "auto"
           }}>
             <h2>ESTADISTICAS DEL PARTIDO</h2>
             <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
             <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
             <h3>{partidoSeleccionado.equipo_a?.nombre}{partidoSeleccionado.resultado}{partidoSeleccionado.equipo_b?.nombre}</h3>
-            <div style={{display: "flex", justifyContent: "space-between"}}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div style={{ width: "45%" }}>
                 <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
                 <ul>

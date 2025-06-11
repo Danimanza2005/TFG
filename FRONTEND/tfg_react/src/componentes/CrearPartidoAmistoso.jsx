@@ -247,14 +247,35 @@ export default function CrearPartidoAmistoso() {
             });
 
             const partidoCompleto = resPartido.data.data || resPartido.data;
-            console.log("Partido completo:", partidoCompleto);
+
+            // Extraer acciones y filtrar jugadores que participaron
+            const acciones = partidoCompleto.acciones || [];
+
+            const jugadoresEnPartidoA = [];
+            const jugadoresEnPartidoB = [];
+
+            acciones.forEach((accion) => {
+                if (
+                    accion.equipo_id === partidoCompleto.equipo_a?.id &&
+                    accion.jugador &&
+                    !jugadoresEnPartidoA.find((j) => j.id === accion.jugador.id)
+                ) {
+                    jugadoresEnPartidoA.push(accion.jugador);
+                }
+                if (
+                    accion.equipo_id === partidoCompleto.equipo_b?.id &&
+                    accion.jugador &&
+                    !jugadoresEnPartidoB.find((j) => j.id === accion.jugador.id)
+                ) {
+                    jugadoresEnPartidoB.push(accion.jugador);
+                }
+            });
 
             setPartidoSeleccionado(partidoCompleto);
             setMostrarModal(true);
 
-            // Ajustar según estructura
-            setJugadoresEquipoA(partidoCompleto.equipo_a?.jugadores || []);
-            setJugadoresEquipoB(partidoCompleto.equipo_b?.jugadores || []);
+            setJugadoresEquipoA(jugadoresEnPartidoA);
+            setJugadoresEquipoB(jugadoresEnPartidoB);
         } catch (error) {
             alert("Error cargando detalles del partido y jugadores");
         }
@@ -444,97 +465,126 @@ export default function CrearPartidoAmistoso() {
                     )}
                 </>
             )}
-            {/* Modal de estadísticas */}
+            {/*
             {mostrarModal && partidoSeleccionado && (
                 <>
-                    {/* Overlay gris semitransparente */}
-                    <div
-                        style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            width: "100vw",
-                            height: "100vh",
-                            backgroundColor: "rgba(0,0,0,0.5)",
-                            zIndex: 999,
-                        }}
-                        onClick={handleCerrarModal}
-                    />
-                    <div
-                        style={{
-                            position: "fixed",
-                            top: "10%",
-                            left: "25%",
-                            width: "50%",
-                            background: "white",
-                            padding: "20px",
-                            border: "2px solid black",
-                            borderRadius: "10px",
-                            zIndex: 1000,
-                            maxHeight: "80vh",
-                            overflowY: "auto",
-                        }}
-                    >
+                    <div className="modal-overlay" onClick={handleCerrarModal} />
+
+                    <div className="modal-contenido">
                         <h2>Estadísticas del Partido</h2>
 
                         <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
                         <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
 
-                        <h3>
+                        <div className="resultado-partido">
                             {partidoSeleccionado.equipo_a?.nombre} {partidoSeleccionado.resultado} {partidoSeleccionado.equipo_b?.nombre}
-                        </h3>
+                        </div>
 
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <div style={{ width: "45%" }}>
+                        <div className="equipos-container">
+                            <div className="equipo">
                                 <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
-                                <ul>
-                                    {jugadoresEquipoA.map(j => (
-                                        <li key={j.id}>{j.nombre}</li>
-                                    ))}
+                                <ul className="lista-jugadores">
+                                    {jugadoresEquipoA.length
+                                        ? jugadoresEquipoA.map(j => <li key={j.id}>{j.nombre}</li>)
+                                        : <li>Sin jugadores</li>}
                                 </ul>
                             </div>
-                            <div style={{ width: "45%" }}>
+
+                            <div className="equipo">
                                 <h4>{partidoSeleccionado.equipo_b?.nombre}</h4>
-                                <ul>
-                                    {jugadoresEquipoB.map(j => (
-                                        <li key={j.id}>{j.nombre}</li>
-                                    ))}
+                                <ul className="lista-jugadores">
+                                    {jugadoresEquipoB.length
+                                        ? jugadoresEquipoB.map(j => <li key={j.id}>{j.nombre}</li>)
+                                        : <li>Sin jugadores</li>}
                                 </ul>
                             </div>
                         </div>
 
-                        <p><strong>MVP:</strong> {partidoSeleccionado.mvp?.jugador?.nombre || "No disponible"}</p>
-
-                        <h4>Estadísticas destacadas</h4>
-                        <ul>
+                        <div className="estadisticas-destacadas">
+                            <strong>Estadísticas destacadas:</strong><br />
                             {(partidoSeleccionado.acciones || []).map((accion, index) => {
                                 let icono = "";
                                 switch (accion.tipo) {
-                                    case "gol":
-                                        icono = "⚽";
-                                        break;
-                                    case "asistencia":
-                                        icono = "👟";
-                                        break;
-                                    case "amarilla":
-                                        icono = "🟨";
-                                        break;
-                                    case "roja":
-                                        icono = "🟥";
-                                        break;
-                                    default:
-                                        icono = "ℹ️";
+                                    case "gol": icono = "⚽"; break;
+                                    case "asistencia": icono = "👟"; break;
+                                    case "amarilla": icono = "🟨"; break;
+                                    case "roja": icono = "🟥"; break;
+                                    default: icono = "ℹ️";
                                 }
                                 return (
-                                    <li key={index}>
+                                    <div key={index}>
                                         {icono} {accion.jugador?.nombre} - {accion.tipo.charAt(0).toUpperCase() + accion.tipo.slice(1)}
-                                    </li>
+                                    </div>
                                 );
                             })}
-                        </ul>
-                        <button onClick={handleCerrarModal} style={{ marginTop: "20px" }}>
-                            Cerrar
-                        </button>
+
+                            <h5>🎖️ MVP: {partidoSeleccionado.mvp?.jugador?.nombre || "No especificado"}</h5>
+                        </div>
+
+                        <button onClick={handleCerrarModal}>Cerrar</button>
+                    </div>
+                </>
+            )}
+            */}
+            {mostrarModal && partidoSeleccionado && (
+                <>
+                    <div className="modal-fondo" onClick={handleCerrarModal} />
+
+                    <div className="modal-contenido">
+                        <h2>Estadísticas del Partido</h2>
+
+                        <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
+                        <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
+
+                        <div className="resultado-partido">
+                            {partidoSeleccionado.equipo_a?.nombre} {partidoSeleccionado.resultado} {partidoSeleccionado.equipo_b?.nombre}
+                        </div>
+
+                        <div className="equipos-container">
+                            <div className="equipo">
+                                <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
+                                <ul className="lista-jugadores">
+                                    {jugadoresEquipoA.length ? (
+                                        jugadoresEquipoA.map(j => <li key={j.id}>{j.nombre}</li>)
+                                    ) : (
+                                        <li>Sin jugadores</li>
+                                    )}
+                                </ul>
+                            </div>
+
+                            <div className="equipo">
+                                <h4>{partidoSeleccionado.equipo_b?.nombre}</h4>
+                                <ul className="lista-jugadores">
+                                    {jugadoresEquipoB.length ? (
+                                        jugadoresEquipoB.map(j => <li key={j.id}>{j.nombre}</li>)
+                                    ) : (
+                                        <li>Sin jugadores</li>
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="estadisticas-destacadas">
+                            <strong>Estadísticas destacadas:</strong>
+                            {(partidoSeleccionado.acciones || []).map((accion, index) => {
+                                let icono = "";
+                                switch (accion.tipo) {
+                                    case "gol": icono = "⚽"; break;
+                                    case "asistencia": icono = "👟"; break;
+                                    case "amarilla": icono = "🟨"; break;
+                                    case "roja": icono = "🟥"; break;
+                                    default: icono = "ℹ️";
+                                }
+                                return (
+                                    <div key={index}>
+                                        {icono} {accion.jugador?.nombre} - {accion.tipo.charAt(0).toUpperCase() + accion.tipo.slice(1)}
+                                    </div>
+                                );
+                            })}
+                            <h5>🎖️ MVP: {partidoSeleccionado.mvp?.jugador?.nombre || "No especificado"}</h5>
+                        </div>
+
+                        <button className="boton-cerrar" onClick={handleCerrarModal}>Cerrar</button>
                     </div>
                 </>
             )}

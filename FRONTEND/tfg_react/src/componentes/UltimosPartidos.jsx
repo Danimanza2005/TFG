@@ -17,12 +17,8 @@ export default function UltimosPartidos() {
         const response = await axios.get('/api/partidos/ultimos-partidos', {
           headers: { Authorization: `Bearer ${token}` },
         });
+        setPartidos(response.data);
 
-       // if (Array.isArray(response.data)) {
-          setPartidos(response.data);
-        //} else {
-          //setErrorMsg('Los datos recibidos no son válidos.');
-        //}
       } catch (error) {
         setErrorMsg('Error al cargar los partidos.');
       } finally {
@@ -42,16 +38,21 @@ export default function UltimosPartidos() {
       const partidoCompleto = resPartido.data.data || resPartido.data;
       setPartidoSeleccionado(partidoCompleto);
 
-      const resEquipoA = await axios.get(`/api/equipos/${partidoCompleto.equipo_a.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setJugadoresEquipoA(resEquipoA.data.jugadores || []);
+      const acciones = partidoCompleto.acciones || [];
+      const jugadoresEnPartidoA = [];
+      const jugadoresEnPartidoB = [];
 
-      const resEquipoB = await axios.get(`/api/equipos/${partidoCompleto.equipo_b.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setJugadoresEquipoB(resEquipoB.data.jugadores || []);
+      acciones.forEach((accion) => {
+        if (accion.equipo_id === partidoCompleto.equipo_a?.id && accion.jugador && !jugadoresEnPartidoA.find((j) => j.id === accion.jugador.id)) {
+          jugadoresEnPartidoA.push(accion.jugador);
+        }
 
+        if (accion.equipo_id === partidoCompleto.equipo_b?.id && accion.jugador && !jugadoresEnPartidoB.find((j) => j.id === accion.jugador.id)) {
+          jugadoresEnPartidoB.push(accion.jugador);
+        }
+      });
+      setJugadoresEquipoA(jugadoresEnPartidoA);
+      setJugadoresEquipoB(jugadoresEnPartidoB);
       setMostrarModal(true);
     } catch (error) {
       alert("Error al cargar estadísticas del partido.");
