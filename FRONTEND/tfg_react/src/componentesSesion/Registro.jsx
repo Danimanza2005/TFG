@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../api/axios";
+import '../css/registro.css';
 
 export default function Registro(){
   const [formulario, setFormulario] = useState({name: "", email: "", password: "", password_confirmation: ""});
@@ -15,7 +16,8 @@ export default function Registro(){
     e.preventDefault();
     try {
       const respuesta = await api.post("/register", formulario);
-      setMensaje("Usuario registrado. Token: " + respuesta.data.token);
+      setMensaje("Usuario registrado. ");
+      setFormulario({name: "", email: "", password:"", password_confirmation:""});
     } catch (error) {
       setMensaje("Error: " + error.response?.data?.message || "Algo salió mal");
     }
@@ -24,10 +26,10 @@ export default function Registro(){
   return (
     <form onSubmit={handleSubmit}>
       <h2>Registro</h2>
-      <input type="text" name="name" placeholder="Introduce un nombre" onChange={handleChange} required />
-      <input type="email" name="email" placeholder="Introduce un correo" onChange={handleChange} required />
-      <input type="password" name="password" placeholder="Introduce una contraseña" onChange={handleChange} required />
-      <input type="password" name="password_confirmation" placeholder="Confirma contraseña" onChange={handleChange} required />
+      <input type="text" name="name" placeholder="Introduce un nombre" onChange={handleChange} value={formulario.name} required />
+      <input type="email" name="email" placeholder="Introduce un correo" onChange={handleChange} value={formulario.email} required />
+      <input type="password" name="password" placeholder="Introduce una contraseña" onChange={handleChange} value={formulario.password} required />
+      <input type="password" name="password_confirmation" placeholder="Confirma contraseña" onChange={handleChange} value={formulario.password_confirmation} required />
       <button type="submit">Registrarse</button>
       <p>{mensaje}</p>
     </form>

@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import '../css/amistoso.css';
+import '../css/amistoso.css'
 
 
 export default function CrearPartidoAmistoso() {
     const navigate = useNavigate();
 
-    // Estados existentes
     const [equipoA, setEquipoA] = useState("");
     const [equipoB, setEquipoB] = useState("");
     const [inputJugadoresA, setInputJugadoresA] = useState("");
@@ -29,7 +28,7 @@ export default function CrearPartidoAmistoso() {
     const [equiposGuardados, setEquiposGuardados] = useState(false);
     const [guardando, setGuardando] = useState(false);
 
-    // NUEVOS estados para mostrar partidos amistosos
+    //NUEVOS estados para mostrar partidos amistosos
     const [mostrarAmistosos, setMostrarAmistosos] = useState(false);
     const [partidosAmistosos, setPartidosAmistosos] = useState([]);
 
@@ -45,14 +44,14 @@ export default function CrearPartidoAmistoso() {
         roja: "🟥",
     };
 
-    // Función para cargar partidos amistosos
+    //Función para cargar partidos amistosos
     const cargarPartidosAmistosos = async () => {
         try {
             const token = localStorage.getItem('token');
             const res = await api.get('/partidos', {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            // Filtrar solo amistosos en frontend
+            //Filtrar solo amistosos en frontend
             const amistosos = res.data.filter((partido) => partido.tipo === 'amistoso');
             console.log('Partidos amistosos filtrados:', amistosos);
             setPartidosAmistosos(amistosos);
@@ -231,7 +230,7 @@ export default function CrearPartidoAmistoso() {
             }
 
             alert("Partido guardado correctamente");
-            navigate("/partidos"); // Ajusta ruta si lo necesitas
+            navigate("/");
         } catch (error) {
             console.error("Error al guardar partido:", error.response?.data || error.message);
             alert("Error al guardar partido");
@@ -292,7 +291,7 @@ export default function CrearPartidoAmistoso() {
         <div>
             {/* Botón y lista para mostrar partidos amistosos */}
             <hr style={{ margin: "20px 0" }} />
-            <button
+            <button className="verAmistosos"
                 onClick={() => {
                     if (!mostrarAmistosos) {
                         cargarPartidosAmistosos();
@@ -310,20 +309,22 @@ export default function CrearPartidoAmistoso() {
                     ) : (
                         partidosAmistosos.map((partido) => (
                             <li key={partido.id} style={{ marginBottom: '10px' }}>
-                                <button
-                                    onClick={() => handleVerEstadisticas(partido)}
-                                    style={{
-                                        whiteSpace: "normal",
-                                        textAlign: "left",
-                                        padding: "8px",
-                                        marginRight: "10px",
-                                    }}
-                                >
-                                    <div><strong>Amistoso:</strong></div>
-                                    <div>{partido.equipo_a?.nombre || 'Equipo A'} vs {partido.equipo_b?.nombre || 'Equipo B'}</div>
-                                    <div>Resultado: {partido.resultado || 'No disponible'}</div>
-                                </button>
-                                <button onClick={() => handleEliminarPartido(partido.id)}>🗑️</button>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <button
+                                        onClick={() => handleVerEstadisticas(partido)}
+                                        style={{
+                                            whiteSpace: "normal",
+                                            textAlign: "left",
+                                            padding: "8px",
+                                            marginRight: "10px",
+                                        }} className="partido-button"
+                                    >
+                                        <div><strong>Amistoso:</strong></div>
+                                        <div>{partido.equipo_a?.nombre || 'Equipo A'} vs {partido.equipo_b?.nombre || 'Equipo B'}</div>
+                                        <div>Resultado: {partido.resultado || 'No disponible'}</div>
+                                    </button>
+                                    <button className="btnEliminar" onClick={() => handleEliminarPartido(partido.id)}>🗑️</button>
+                                </div>
                             </li>
                         ))
                     )}
@@ -332,17 +333,16 @@ export default function CrearPartidoAmistoso() {
             <hr style={{ margin: "20px 0" }} />
             <h2>Crear Partido Amistoso</h2>
 
-            <h3>1. Equipos y jugadores</h3>
-
-            <div>
-                <input
-                    type="text"
-                    placeholder="Nombre equipo A"
-                    value={equipoA}
-                    onChange={(e) => setEquipoA(e.target.value)}
-                />
-                <div>
-                    <input
+            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <div className="equipo-container">
+                    <h3>Equipo A</h3>
+                    <input className="inputYselect"
+                        type="text"
+                        placeholder="Nombre equipo A"
+                        value={equipoA}
+                        onChange={(e) => setEquipoA(e.target.value)}
+                    />
+                    <input className="inputYselect"
                         type="text"
                         placeholder="Jugadores equipo A (separados por comas)"
                         value={inputJugadoresA}
@@ -361,22 +361,21 @@ export default function CrearPartidoAmistoso() {
                         {jugadoresA.map((j, i) => (
                             <li key={`jugA-${i}`}>
                                 {j}
-                                <button onClick={() => handleEliminarJugador(i, jugadoresA, setJugadoresA)}>🗑️</button>
+                                <button className="btnEliminar" onClick={() => handleEliminarJugador(i, jugadoresA, setJugadoresA)}>🗑️</button>
                             </li>
                         ))}
                     </ul>
                 </div>
-            </div>
 
-            <div>
-                <input
-                    type="text"
-                    placeholder="Nombre equipo B"
-                    value={equipoB}
-                    onChange={(e) => setEquipoB(e.target.value)}
-                />
-                <div>
-                    <input
+                <div className="equipo-container">
+                    <h3>Equipo B</h3>
+                    <input className="inputYselect"
+                        type="text"
+                        placeholder="Nombre equipo B"
+                        value={equipoB}
+                        onChange={(e) => setEquipoB(e.target.value)}
+                    />
+                    <input className="inputYselect"
                         type="text"
                         placeholder="Jugadores equipo B (separados por comas)"
                         value={inputJugadoresB}
@@ -395,150 +394,113 @@ export default function CrearPartidoAmistoso() {
                         {jugadoresB.map((j, i) => (
                             <li key={`jugB-${i}`}>
                                 {j}
-                                <button onClick={() => handleEliminarJugador(i, jugadoresB, setJugadoresB)}>🗑️</button>
+                                <button className="btnEliminar" onClick={() => handleEliminarJugador(i, jugadoresB, setJugadoresB)}>🗑️</button>
                             </li>
                         ))}
                     </ul>
                 </div>
             </div>
 
-            <button onClick={handleGuardarEquipos}>Guardar Equipos y Jugadores</button>
+            <button className="btnGuardarEquipos" onClick={handleGuardarEquipos}>Guardar Equipos y Jugadores</button>
 
             {equiposGuardados && (
-                <>
-                    <h3>2. Añadir acciones</h3>
-                    <select
-                        value={jugadorSeleccionado}
-                        onChange={(e) => setJugadorSeleccionado(e.target.value)}
-                    >
-                        <option value="" disabled>Selecciona jugador</option>
-                        {jugadoresTotales.map((j, i) => (
-                            <option key={`${j.nombre}-${i}`} value={j.nombre}>
-                                {j.nombre} ({j.equipo})
-                            </option>
-                        ))}
-                    </select>
+                <div className="lineaAmarilla">
+                    <div className="seccion-partido">
+                        <h3>Añadir acciones</h3>
+                        <select className="inputYselect"
+                            value={jugadorSeleccionado}
+                            onChange={(e) => setJugadorSeleccionado(e.target.value)}
+                        >
+                            <option value="" disabled>Selecciona jugador</option>
+                            {jugadoresTotales.map((j, i) => (
+                                <option key={`${j.nombre}-${i}`} value={j.nombre}>
+                                    {j.nombre} ({j.equipo})
+                                </option>
+                            ))}
+                        </select>
 
-                    <select
-                        value={accionSeleccionada}
-                        onChange={(e) => setAccionSeleccionada(e.target.value)}
-                    >
-                        <option value="" disabled>Acción</option>
-                        <option value="gol">Gol ⚽</option>
-                        <option value="asistencia">Asistencia 👟</option>
-                        <option value="amarilla">Amarilla 🟨</option>
-                        <option value="roja">Roja 🟥</option>
-                    </select>
+                        <select className="inputYselect"
+                            value={accionSeleccionada}
+                            onChange={(e) => setAccionSeleccionada(e.target.value)}
+                        >
+                            <option value="" disabled>Acción</option>
+                            <option value="gol">Gol ⚽</option>
+                            <option value="asistencia">Asistencia 👟</option>
+                            <option value="amarilla">Amarilla 🟨</option>
+                            <option value="roja">Roja 🟥</option>
+                        </select>
 
-                    <button onClick={handleAñadirAccion}>Añadir acción</button>
+                        <button className="btnGuardarEquiposAccion" onClick={handleAñadirAccion}>Añadir acción</button>
 
-                    <ul>
-                        {acciones.map((a, i) => (
-                            <li key={`accion-${i}`}>
-                                {a.jugador} ({a.equipo}) : {a.accion} {iconosAcciones[a.accion]}
-                                <button onClick={() => handleEliminarAccion(i)}>🗑️</button>
-                            </li>
-                        ))}
-                    </ul>
+                        <ul>
+                            {acciones.map((a, i) => (
+                                <li key={`accion-${i}`} className="lista-accion">
+                                    {a.jugador} ({a.equipo}) : {a.accion} {iconosAcciones[a.accion]}
+                                    <button className="btnEliminarAccion" onClick={() => handleEliminarAccion(i)}>🗑️</button>
+                                </li>
+                            ))}
+                        </ul>
 
-                    <h3>3. Seleccionar MVP</h3>
-                    <select value={mvp} onChange={(e) => setMvp(e.target.value)}>
-                        <option value="" disabled>Selecciona MVP</option>
-                        {jugadoresTotales.map((j, i) => (
-                            <option key={`mvp-${i}`} value={j.nombre}>
-                                {j.nombre} ({j.equipo})
-                            </option>
-                        ))}
-                    </select>
+                        <h3>Seleccionar MVP</h3>
+                        <select className="inputYselect" value={mvp} onChange={(e) => setMvp(e.target.value)}>
+                            <option value="" disabled>Selecciona MVP</option>
+                            {jugadoresTotales.map((j, i) => (
+                                <option key={`mvp-${i}`} value={j.nombre}>
+                                    {j.nombre} ({j.equipo})
+                                </option>
+                            ))}
+                        </select>
 
-                    <h3>4. Resultado final</h3>
-                    <input
-                        type="text"
-                        placeholder="Resultado (ej: 3-2)"
-                        value={resultado}
-                        onChange={(e) => setResultado(e.target.value)} />
+                        <h3>Resultado final</h3>
+                        <input className="inputYselect"
+                            type="text"
+                            placeholder="Resultado (ej: 3-2)"
+                            value={resultado}
+                            onChange={(e) => setResultado(e.target.value)} />
 
-                    <button onClick={handleGuardarPartido}>Guardar Partido</button>
-                    {guardando && (
-                        <div className="modal-loader">
-                            <div className="spinner"></div>
-                            <p>Guardando partido, por favor espera...</p>
-                        </div>
-                    )}
-                </>
-            )}
-            {/*
-            {mostrarModal && partidoSeleccionado && (
-                <>
-                    <div className="modal-overlay" onClick={handleCerrarModal} />
-
-                    <div className="modal-contenido">
-                        <h2>Estadísticas del Partido</h2>
-
-                        <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
-                        <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
-
-                        <div className="resultado-partido">
-                            {partidoSeleccionado.equipo_a?.nombre} {partidoSeleccionado.resultado} {partidoSeleccionado.equipo_b?.nombre}
-                        </div>
-
-                        <div className="equipos-container">
-                            <div className="equipo">
-                                <h4>{partidoSeleccionado.equipo_a?.nombre}</h4>
-                                <ul className="lista-jugadores">
-                                    {jugadoresEquipoA.length
-                                        ? jugadoresEquipoA.map(j => <li key={j.id}>{j.nombre}</li>)
-                                        : <li>Sin jugadores</li>}
-                                </ul>
+                        <button className="btnGuardarPartidoLiga" onClick={handleGuardarPartido}>Guardar Partido</button>
+                        {guardando && (
+                            <div className="modal-loader">
+                                <div className="spinner"></div>
+                                <p>Guardando partido, por favor espera...</p>
                             </div>
-
-                            <div className="equipo">
-                                <h4>{partidoSeleccionado.equipo_b?.nombre}</h4>
-                                <ul className="lista-jugadores">
-                                    {jugadoresEquipoB.length
-                                        ? jugadoresEquipoB.map(j => <li key={j.id}>{j.nombre}</li>)
-                                        : <li>Sin jugadores</li>}
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div className="estadisticas-destacadas">
-                            <strong>Estadísticas destacadas:</strong><br />
-                            {(partidoSeleccionado.acciones || []).map((accion, index) => {
-                                let icono = "";
-                                switch (accion.tipo) {
-                                    case "gol": icono = "⚽"; break;
-                                    case "asistencia": icono = "👟"; break;
-                                    case "amarilla": icono = "🟨"; break;
-                                    case "roja": icono = "🟥"; break;
-                                    default: icono = "ℹ️";
-                                }
-                                return (
-                                    <div key={index}>
-                                        {icono} {accion.jugador?.nombre} - {accion.tipo.charAt(0).toUpperCase() + accion.tipo.slice(1)}
-                                    </div>
-                                );
-                            })}
-
-                            <h5>🎖️ MVP: {partidoSeleccionado.mvp?.jugador?.nombre || "No especificado"}</h5>
-                        </div>
-
-                        <button onClick={handleCerrarModal}>Cerrar</button>
+                        )}
                     </div>
-                </>
+                </div>
             )}
-            */}
+
             {mostrarModal && partidoSeleccionado && (
                 <>
-                    <div className="modal-fondo" onClick={handleCerrarModal} />
+                    <div className="modal-overlay" style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        zIndex: 999
+                    }}
+                        onClick={handleCerrarModal}></div>
 
-                    <div className="modal-contenido">
+                    <div className="modal-estadisticas" style={{
+                        position: "fixed",
+                        top: "10%",
+                        left: "25%",
+                        width: "50%",
+                        background: "white",
+                        padding: "20px",
+                        border: "2px solid black",
+                        borderRadius: "10px",
+                        zIndex: 1000,
+                        maxHeight: "80vh",
+                        overflowY: "auto"
+                    }}>
                         <h2>Estadísticas del Partido</h2>
 
                         <p><strong>Tipo:</strong> {partidoSeleccionado.tipo || "Amistoso"}</p>
                         <p><strong>Fecha:</strong> {new Date(partidoSeleccionado.fecha).toLocaleString()}</p>
 
-                        <div className="resultado-partido">
+                        <div className="neon">
                             {partidoSeleccionado.equipo_a?.nombre} {partidoSeleccionado.resultado} {partidoSeleccionado.equipo_b?.nombre}
                         </div>
 
@@ -565,7 +527,7 @@ export default function CrearPartidoAmistoso() {
                                 </ul>
                             </div>
                         </div>
-
+                        <h5 className="mvp">🎖️ MVP: {partidoSeleccionado.mvp?.jugador?.nombre || "No especificado"}</h5>
                         <div className="estadisticas-destacadas">
                             <strong>Estadísticas destacadas:</strong>
                             {(partidoSeleccionado.acciones || []).map((accion, index) => {
@@ -583,7 +545,6 @@ export default function CrearPartidoAmistoso() {
                                     </div>
                                 );
                             })}
-                            <h5>🎖️ MVP: {partidoSeleccionado.mvp?.jugador?.nombre || "No especificado"}</h5>
                         </div>
 
                         <button className="boton-cerrar" onClick={handleCerrarModal}>Cerrar</button>

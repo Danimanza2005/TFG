@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import '../css/registro.css';
 
 export default function Login() {
   const [formulario, setFormulario] = useState({ email: "", password: "" });
@@ -36,9 +37,9 @@ export default function Login() {
   return(
     <form onSubmit={handleSubmit}>
       <h2>Login</h2>
-      <input type="email" name="email" placeholder="Introduce un correo" onChange={handleChange} />
+      <input type="email" name="email" placeholder="Introduce un correo" onChange={handleChange} required/>
       {error.email && <p style={{color: "red"}}>{error.email}</p>}
-      <input type="password" name="password" placeholder="Introduce la contraseña" onChange={handleChange} />
+      <input type="password" name="password" placeholder="Introduce la contraseña" onChange={handleChange} required/>
       {error.password && <p style={{color: "red"}}>{error.password}</p>}
       <button type="submit">Entrar</button>
       {error.general && <p style={{color: "red"}}>{error.general}</p>}

@@ -58,18 +58,22 @@ li {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 8px;
-  margin-top: 5px;
-  background-color: black;
-  color: lime;
-  border: 2px solid lime;
-  font-family: 'Courier New', monospace;
+  padding: 10px 12px;
   margin-top: 20px;
+  background-color: #1a1a4d;
+  color: #e6d87c;
+  border: 2px solid #e6d87c;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-shadow:
+    0.5px 0.5px 0 #000000aa;
 }
 
 .partido-button:hover {
-  background-color: rgb(64, 255, 47);
-  color: black;
+  background-color: #e6d87c;
+  color: #1a1a4d;
+  border-color: #1a1a4d;
+  text-shadow: none;
 }
 
 .btnEliminar {
@@ -137,7 +141,7 @@ li {
   color: #fff;
   text-shadow:
     0 0 5px #fff,
-    0 0 10px rgb(255, 255, 255);
+    0 0 10px rgb(223, 223, 223);
 }
 
 .equipos-container {

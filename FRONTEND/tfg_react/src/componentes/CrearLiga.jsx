@@ -16,6 +16,8 @@ export default function CrearLiga() {
   //hook para redirigir a otras rutas
   const navigate = useNavigate();
 
+  const [ligasVisibles, setLigasVisibles] = useState({});
+
   //useEffect para cargar las ligas que estan guardadas
   useEffect(() => {
     const fetchLigas = async () => {
@@ -57,6 +59,20 @@ export default function CrearLiga() {
 
   //handle para ver los partidos de una liga especifica
   const handleVerPartidos = async (ligaId) => {
+    const ligaYaVisible = ligasVisibles[ligaId];
+    //si los partidos de esa liga estan visibles, se ocultan
+    if (ligaYaVisible) {
+      //actualiza el estado para marcar la liga como no visible
+      setLigasVisibles(prev => ({
+        ...prev,
+        [ligaId]: false  //indicamos que la liga ya no se muestren los partidos de esa liga
+      }));
+      setMostrarModal(false);
+      //limpia el partido seleccionado
+      setPartidoSeleccionado(null);
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       const respuesta = await api.get(`/partidos?liga_id=${ligaId}`, {
@@ -64,8 +80,11 @@ export default function CrearLiga() {
           Authorization: `Bearer ${token}`
         },
       });
+
       //guarda los partidos por liga usando el id
       setPartidosPorLiga((prev) => ({ ...prev, [ligaId]: respuesta.data.data || respuesta.data, }));
+      //se marca la liga como visible para mostrar los partidos
+      setLigasVisibles((prev) => ({ ...prev, [ligaId]: true }))
     } catch (error) {
       alert("Error al obtener partidos");
     }
@@ -135,6 +154,32 @@ export default function CrearLiga() {
     }
   };
 
+  const handleEliminarLiga = async (ligaId) => {
+    const confirmar = window.confirm("¿Estás seguro de que quieres eliminar esta liga?");
+
+    if (!confirmar) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const respuesta = await api.delete(`/ligas/${ligaId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+      //actualiza el estado de las ligas eliminando la liga con el id que se haya especificado
+      setLigas((prev) => prev.filter((liga) => liga.id !== ligaId));
+      //quita la liga eliminada del estado de ligas visibles para que ya no se muestre
+      setLigasVisibles((prev) => {
+        const copia = {...prev};
+        delete copia[ligaId];
+        return copia;
+      });
+      alert("Liga eliminada");
+    } catch (error) {
+      alert("Error al eliminar la liga");
+    }
+  };
+
   //handle para cerrar el modal
   const handleCerrarModal = async () => {
     setMostrarModal(false);
@@ -153,24 +198,27 @@ export default function CrearLiga() {
           <li key={liga.id}>
             {liga.nombre}
             <button className="btnLiga" onClick={() => navigate(`/ligas/${liga.id}/crear-partido`)}>Crear partido en esta liga</button>
-            <button className="btnLiga" onClick={() => handleVerPartidos(liga.id)}>Ver partidos de esta liga</button>
-            <ul>
-              {(partidosPorLiga[liga.id] || []).map((partido) => (
-                <li key={partido.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <button onClick={() => handleVerEstadisticas(partido)} style={{
-                    whiteSpace: "normal",
-                    textAlign: "left",
-                    padding: "8px",
-                    marginRight: "10px",
-                  }} className="partido-button">
-                    <div><strong>Liga: </strong>{partido.liga ? partido.liga.nombre : "Amistoso"}</div>
-                    <div>{partido.equipo_a?.nombre || "Equipo A"} vs {partido.equipo_b?.nombre || "Equipo B"}</div>
-                    <div>Resultado: {partido.resultado || "No disponible"}</div>
-                  </button>
-                  <button className="btnEliminar" onClick={() => handleEliminarPartidos(liga.id, partido.id)}>🗑️</button>
-                </li>
-              ))}
-            </ul>
+            <button className="btnLiga" onClick={() => handleVerPartidos(liga.id)}>{ligasVisibles[liga.id] ? "Ocultar partidos de esta liga" : "Ver partidos de esta liga"}</button>
+            <button className="btnEliminar" onClick={() => handleEliminarLiga(liga.id)}>🗑️</button>
+            {ligasVisibles[liga.id] && (
+              <ul>
+                {(partidosPorLiga[liga.id] || []).map((partido) => (
+                  <li key={partido.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <button onClick={() => handleVerEstadisticas(partido)} style={{
+                      whiteSpace: "normal",
+                      textAlign: "left",
+                      padding: "8px",
+                      marginRight: "10px",
+                    }} className="partido-button">
+                      <div><strong>Liga: </strong>{partido.liga ? partido.liga.nombre : "Amistoso"}</div>
+                      <div>{partido.equipo_a?.nombre || "Equipo A"} vs {partido.equipo_b?.nombre || "Equipo B"}</div>
+                      <div>Resultado: {partido.resultado || "No disponible"}</div>
+                    </button>
+                    <button className="btnEliminar" onClick={() => handleEliminarPartidos(liga.id, partido.id)}>🗑️</button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
