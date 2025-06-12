@@ -1,6 +1,0 @@
-- Revisar lo de cargando... al crear un partido
-- En el apartado de inicio que salga
--Buscar partido por equipos
--Falta solo ultimos y amistoso a mano
--Editar lo del correo(no necesario)
--Hacer que el boton de ver partidos liga sea como el de amistoso, es decir que salga lo de ocultar

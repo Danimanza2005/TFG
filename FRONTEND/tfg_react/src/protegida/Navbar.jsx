@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
       <nav className="sidebar">
-        <h2>FutbolBarro</h2>
+        <h2>FutbolBarro ⚽</h2>
         {!token ? (
           <>
             <Link to="/login">Login</Link>
